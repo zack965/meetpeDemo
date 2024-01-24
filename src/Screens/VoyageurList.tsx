@@ -19,7 +19,7 @@ function VoyageurList() {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
                 'api_key': 'itHP54kdcSKkO1IgbTnm6jZdsjmKTj4VsHNA4eLDP2N84hGdJCI59ynr6bSKK5Pv',
-                'Authorization': 'Bearer 40|QA05eLPRaaKfbRF1KaJs93pdrWpOwZQwcBFzaMEwc6e59ff2'
+                'Authorization': 'Bearer 48|HMW242Uou0VfOgtHUfQotj3Bv0I5tV2xuRWNkwQZ6041ab8e'
             }
         }).then((res) => {
             setVoyageurs(res.data)

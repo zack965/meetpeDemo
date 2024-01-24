@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import axios from 'axios';
-import { Guide, Language, Personalite, SqlMatcingGuide } from './HamiltongDistanceMatching';
+import { CosignSimularityGuide, Guide, Language, Personalite, SqlMatcingGuide } from './HamiltongDistanceMatching';
 import { Avatar, Card, CardBody, CardHeader, Typography } from '@material-tailwind/react';
 export interface User {
     id: number
@@ -46,7 +46,11 @@ function VoyageurProfile() {
     const [User, setUser] = useState<User>()
     const [MatchedGuides, setMatchedGuides] = useState<(Guide[])>([]);
     const [MatchedGuidesSql, setMatchedGuidesSql] = useState<(SqlMatcingGuide[])>([]);
+    const [MatchedGuidesCosign, setMatchedGuidesCosign] = useState<(CosignSimularityGuide[])>([]);
     const [UserChoicesVoyageur, setUserChoicesVoyageur] = useState<string[]>([])
+    const [CosignSumilarityTimeUser, setCosignSumilarityTimeUser] = useState<number>()
+    const [SqlMatchingTimeUser, setSqlMatchingTimeUser] = useState<number>()
+    const [HamingDistanceTimeUser, setHamingDistanceTimeUser] = useState<number>()
 
     const [ChoicesList, setChoicesList] = useState<UserChoices>()
     useEffect(() => {
@@ -56,7 +60,7 @@ function VoyageurProfile() {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
                 'api_key': 'itHP54kdcSKkO1IgbTnm6jZdsjmKTj4VsHNA4eLDP2N84hGdJCI59ynr6bSKK5Pv',
-                'Authorization': 'Bearer 40|QA05eLPRaaKfbRF1KaJs93pdrWpOwZQwcBFzaMEwc6e59ff2'
+                'Authorization': 'Bearer 48|HMW242Uou0VfOgtHUfQotj3Bv0I5tV2xuRWNkwQZ6041ab8e'
             }
         }).then((res) => {
             console.log(res.data)
@@ -68,42 +72,62 @@ function VoyageurProfile() {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
                 'api_key': 'itHP54kdcSKkO1IgbTnm6jZdsjmKTj4VsHNA4eLDP2N84hGdJCI59ynr6bSKK5Pv',
-                'Authorization': 'Bearer 40|QA05eLPRaaKfbRF1KaJs93pdrWpOwZQwcBFzaMEwc6e59ff2'
+                'Authorization': 'Bearer 48|HMW242Uou0VfOgtHUfQotj3Bv0I5tV2xuRWNkwQZ6041ab8e'
             }
         }).then((res) => {
             setChoicesList(res.data)
         })
     }, [])
     const matchByVoyageur = (user_id: number) => {
-        axios.post<{ data: Guide[], user_choices_voyageur: string[] }>(`http://127.0.0.1:8000/api/MatchingHammingDistance/${user_id}`, null, {
+        axios.post<{ data: Guide[], user_choices_voyageur: string[], time_taken: number }>(`http://127.0.0.1:8000/api/MatchingHammingDistance/${user_id}`, null, {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
                 'api_key': 'itHP54kdcSKkO1IgbTnm6jZdsjmKTj4VsHNA4eLDP2N84hGdJCI59ynr6bSKK5Pv',
-                'Authorization': 'Bearer 40|QA05eLPRaaKfbRF1KaJs93pdrWpOwZQwcBFzaMEwc6e59ff2'
+                'Authorization': 'Bearer 48|HMW242Uou0VfOgtHUfQotj3Bv0I5tV2xuRWNkwQZ6041ab8e'
             }
         }).then((res) => {
             const data = res.data.data.sort((a, b) => a.hamiltong_distance - b.hamiltong_distance);
             setMatchedGuides(data)
             /*       setMatchedGuidesSql([]) */
             setUserChoicesVoyageur(res.data.user_choices_voyageur)
+            setHamingDistanceTimeUser(res.data.time_taken)
         })
     }
     const matchByVoyageurSql = (user_id: number) => {
-        axios.post<{ data: SqlMatcingGuide[], user_choices_voyageur: string[] }>(`http://127.0.0.1:8000/api/SqlMatching/${user_id}`, null, {
+        axios.post<{ data: SqlMatcingGuide[], user_choices_voyageur: string[], time_taken: number }>(`http://127.0.0.1:8000/api/SqlMatching/${user_id}`, null, {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
                 'api_key': 'itHP54kdcSKkO1IgbTnm6jZdsjmKTj4VsHNA4eLDP2N84hGdJCI59ynr6bSKK5Pv',
-                'Authorization': 'Bearer 40|QA05eLPRaaKfbRF1KaJs93pdrWpOwZQwcBFzaMEwc6e59ff2'
+                'Authorization': 'Bearer 48|HMW242Uou0VfOgtHUfQotj3Bv0I5tV2xuRWNkwQZ6041ab8e'
             }
         }).then((res) => {
             /*     const data = res.data.data.sort((a, b) => a.hamiltong_distance - b.hamiltong_distance);
                 setMatchedGuides(data)
                 setUserChoicesVoyageur(res.data.user_choices_voyageur) */
             setMatchedGuidesSql(res.data.data)
+            setSqlMatchingTimeUser(res.data.time_taken)
             /*    setMatchedGuides([]) */
-            setUserChoicesVoyageur(res.data.user_choices_voyageur)
+            //  setUserChoicesVoyageur(res.data.user_choices_voyageur)
+        })
+    }
+    const CosignMatching = (user_id: number) => {
+        axios.post<{ data: CosignSimularityGuide[], time_taken: number, user_choices_voyageur: string[] }>(`http://127.0.0.1:8000/api/MatchingCosineSimilarity/${user_id}`, null, {
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'api_key': 'itHP54kdcSKkO1IgbTnm6jZdsjmKTj4VsHNA4eLDP2N84hGdJCI59ynr6bSKK5Pv',
+                'Authorization': 'Bearer 48|HMW242Uou0VfOgtHUfQotj3Bv0I5tV2xuRWNkwQZ6041ab8e'
+            }
+        }).then((res) => {
+            /*     const data = res.data.data.sort((a, b) => a.hamiltong_distance - b.hamiltong_distance);
+                setMatchedGuides(data)
+                setUserChoicesVoyageur(res.data.user_choices_voyageur) */
+            setMatchedGuidesCosign(res.data.data)
+            setCosignSumilarityTimeUser(res.data.time_taken)
+            /*    setMatchedGuides([]) */
+            //  setUserChoicesVoyageur(res.data.user_choices_voyageur)
         })
     }
 
@@ -133,7 +157,8 @@ function VoyageurProfile() {
                     </div>
                 </div>
                 <p className='px-10 font-bold text-2xl  py-5'>
-                    {Choices?.[0].question_text}
+                    {/*  {Choices?.[0].question_text} */}
+                    On dit de toi que tu es...
                 </p>
                 <div className="w-full pl-20 flex flex-wrap justify-start">
 
@@ -154,7 +179,32 @@ function VoyageurProfile() {
                     })}
                     <br />
 
-                    <div className="w-full my-6 flex justify-center items-center">
+
+                </div>
+                <p className='px-10 font-bold text-2xl  py-5'>
+                    {/*  {Choices?.[0].question_text} */}
+                    Tu parles...
+                </p>
+                <div className="w-full pl-20 flex flex-wrap justify-start">
+
+                    {ChoicesList?.languages.map((per) => {
+                        if (Choices?.some(obj => obj.choice_id == per.id)) {
+                            return (
+                                <p className='px-3   py-5 bg-green-500 my-2  rounded-lg mx-1'>
+                                    {per.choice_txt}
+                                </p>
+                            );
+                        } else {
+                            return (
+                                <p className='px-3 py-5 bg-white my-2 rounded-lg mx-1'>
+                                    {per.choice_txt}
+                                </p>
+                            );
+                        }
+                    })}
+                    <br />
+
+                    {/*  <div className="w-full my-6 flex justify-center items-center">
 
                         <button
                             onClick={() => {
@@ -165,22 +215,36 @@ function VoyageurProfile() {
                         >Matcher
                         </button>
                     </div>
-                    {/*    <div className="w-full my-6 flex justify-center items-center">
-
-                        <button
-                            onClick={() => { matchByVoyageurSql(parseInt(id!)) }}
-                            className="inline-block  w-auto min-w-[250px] px-6 py-4 text-white transition-all bg-gray-700 dark:bg-white dark:text-gray-800 rounded-md shadow-xl sm:w-auto hover:bg-gray-900 hover:text-white shadow-slate-300 dark:shadow-slate-700 hover:shadow-2xl hover:shadow-slate-400 hover:-translate-y-px"
-                        >Matcher Sql
-                        </button>
-                    </div> */}
+              
                     <br />
-                    <br />
+                    <br /> */}
                 </div>
+                <div className="w-full my-6 flex justify-center items-center">
+
+                    <button
+                        onClick={() => {
+                            matchByVoyageur(parseInt(id!))
+                            matchByVoyageurSql(parseInt(id!))
+                            CosignMatching(parseInt(id!))
+                        }}
+                        className="inline-block  w-auto min-w-[250px] px-6 py-4 text-white transition-all bg-gray-700 dark:bg-white dark:text-gray-800 rounded-md shadow-xl sm:w-auto hover:bg-gray-900 hover:text-white shadow-slate-300 dark:shadow-slate-700 hover:shadow-2xl hover:shadow-slate-400 hover:-translate-y-px"
+                    >Matcher
+                    </button>
+                </div>
+
+                <br />
+                <br />
             </div>
             <div className="w-2/3">
                 <div className='w-full flex'>
-                    <div className="w-1/3">
+                    <div className="w-1/3 ">
 
+                        <p className="w-5/6 py-2 my-2 px-4 font-bold underline text-white bg-black rounded-lg">
+                            Hamming Distance
+                        </p>
+                        <p className="w-1/2 px-4 py-0 font-bold underline ">
+                            temps : {HamingDistanceTimeUser}
+                        </p>
                         {MatchedGuides.map((voyageur) => (
                             <Card color="transparent" shadow={false} className="w-full">
                                 <CardHeader
@@ -235,15 +299,15 @@ function VoyageurProfile() {
                                         <Typography color="blue-gray">{voyageur.email}</Typography>
                                     </div>
                                 </CardHeader>
-                                <CardBody className="mb-6 p-0 flex w-full ">
+                                <CardBody className="mb-6 p-0 flex flex-wrap w-full overflow-x-auto whitespace-normal ">
                                     {voyageur.choices_guide.map((choice) => (
                                         <>
                                             {UserChoicesVoyageur.indexOf(choice) == -1 ? (
-                                                <Typography className='bg-gray-500 text-white py-3 rounded-lg px-2 mx-2'>
+                                                <Typography className='bg-gray-500 my-2 text-white py-3 rounded-lg px-2 mx-2'>
                                                     {choice}
                                                 </Typography>
                                             ) : (
-                                                <Typography className='bg-green-500 text-white py-3 rounded-lg px-2 mx-2'>
+                                                <Typography className='bg-green-500 my-2 text-white py-3 rounded-lg px-2 mx-2'>
                                                     {choice}
                                                 </Typography>)}
 
@@ -254,7 +318,12 @@ function VoyageurProfile() {
                         ))}
                     </div>
                     <div className="w-1/3">
-
+                        <p className="w-5/6 py-2 my-2 px-4 font-bold underline text-white bg-black rounded-lg">
+                            Sql
+                        </p>
+                        <p className="w-full py-0 font-bold underline text-gray-600">
+                            temps : {SqlMatchingTimeUser}
+                        </p>
                         {MatchedGuidesSql.map((voyageur) => (
                             <Card color="transparent" shadow={false} className="w-5/6">
                                 <CardHeader
@@ -309,12 +378,83 @@ function VoyageurProfile() {
                                         <Typography color="blue-gray">{voyageur.email}</Typography>
                                     </div>
                                 </CardHeader>
-                                <CardBody className="mb-6 p-0 flex">
+                                <CardBody className="mb-6 p-0 flex flex-wrap w-full overflow-x-auto whitespace-normal">
                                     {voyageur.choices_guide.map((choice) => (
                                         <>
-                                            {UserChoicesVoyageur.indexOf(choice) == -1 ? (<Typography className='bg-gray-500 text-white py-3 rounded-lg px-2 mx-2'>
+                                            {UserChoicesVoyageur.indexOf(choice) == -1 ? (<Typography className='bg-gray-500 my-2 text-white py-3 rounded-lg px-2 mx-2'>
                                                 {choice}
-                                            </Typography>) : (<Typography className='bg-green-500 text-white py-3 rounded-lg px-2 mx-2'>
+                                            </Typography>) : (<Typography className='bg-green-500 my-2 text-white py-3 rounded-lg px-2 mx-2'>
+                                                {choice}
+                                            </Typography>)}
+
+                                        </>
+                                    ))}
+                                </CardBody>
+                            </Card>
+                        ))}
+                    </div>
+                    <div className="w-1/3">
+                        <p className="w-5/6 py-2 my-2 px-4  font-bold underline text-white bg-black rounded-lg">
+                            Cosine similarity
+                        </p>
+                        <p className="w-full py-0 font-bold underline text-gray-600">
+                            temps : {CosignSumilarityTimeUser}
+                        </p>
+                        {MatchedGuidesCosign.map((voyageur, index) => (
+                            <Card color="transparent" shadow={false} className="w-5/6">
+                                <CardHeader
+                                    color="transparent"
+                                    floated={false}
+                                    shadow={false}
+                                    className="mx-0 flex items-start gap-4 pt-0 pb-8"
+                                >
+                                    <div className=''>
+
+                                        <Avatar
+                                            size="lg"
+                                            variant="circular"
+                                            src={voyageur.profile_path}
+                                            alt="tania andrew"
+                                        />
+                                        <div className="flex mt-4">
+
+                                            {index < 10 ? (<>
+                                                <StarIcon />
+                                                <StarIcon />
+                                                <StarIcon />
+                                                <StarIcon />
+                                                <StarIcon />
+                                            </>) : null}
+                                            {index >= 10 && index <= 200 ? (<>
+                                                <StarIcon />
+                                                <StarIcon />
+                                                <StarIcon />
+                                                <StarIcon />
+                                            </>) : null}
+
+                                        </div>
+                                    </div>
+
+                                    <div className="flex w-full flex-col gap-0.5">
+                                        <div className="flex items-center justify-between">
+                                            <Typography variant="h5" color="blue-gray">
+                                                {voyageur.name}
+                                            </Typography>
+                                            <div className="5 flex items-center gap-0">
+
+
+                                            </div>
+
+                                        </div>
+                                        <Typography color="blue-gray">{voyageur.email}</Typography>
+                                    </div>
+                                </CardHeader>
+                                <CardBody className="mb-6 p-0 flex flex-wrap w-full overflow-x-auto whitespace-normal">
+                                    {voyageur.choices_guide.map((choice) => (
+                                        <>
+                                            {UserChoicesVoyageur.indexOf(choice) == -1 ? (<Typography className='bg-gray-500 my-2 text-white py-3 rounded-lg px-2 mx-2'>
+                                                {choice}
+                                            </Typography>) : (<Typography className='bg-green-500 my-2 text-white py-3 rounded-lg px-2 mx-2'>
                                                 {choice}
                                             </Typography>)}
 

@@ -27,6 +27,17 @@ export interface SqlMatcingGuide {
 
 
 }
+export interface CosignSimularityGuide {
+    id: number
+    name: string
+    email: string
+    value: number
+    profile_path: string
+    choices_guide: string[]
+
+
+
+}
 export interface Choices {
     personalite: Personalite[]
     languages: Language[]
@@ -52,7 +63,7 @@ function HamiltongDistanceMatching() {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
                 'api_key': 'itHP54kdcSKkO1IgbTnm6jZdsjmKTj4VsHNA4eLDP2N84hGdJCI59ynr6bSKK5Pv',
-                'Authorization': 'Bearer 40|QA05eLPRaaKfbRF1KaJs93pdrWpOwZQwcBFzaMEwc6e59ff2'
+                'Authorization': 'Bearer 48|HMW242Uou0VfOgtHUfQotj3Bv0I5tV2xuRWNkwQZ6041ab8e'
             }
         }).then((res) => {
             setVoyageurs(res.data)
@@ -62,7 +73,7 @@ function HamiltongDistanceMatching() {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
                 'api_key': 'itHP54kdcSKkO1IgbTnm6jZdsjmKTj4VsHNA4eLDP2N84hGdJCI59ynr6bSKK5Pv',
-                'Authorization': 'Bearer 40|QA05eLPRaaKfbRF1KaJs93pdrWpOwZQwcBFzaMEwc6e59ff2'
+                'Authorization': 'Bearer 48|HMW242Uou0VfOgtHUfQotj3Bv0I5tV2xuRWNkwQZ6041ab8e'
             }
         }).then((res) => {
             setChoices(res.data)
@@ -74,7 +85,7 @@ function HamiltongDistanceMatching() {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
                 'api_key': 'itHP54kdcSKkO1IgbTnm6jZdsjmKTj4VsHNA4eLDP2N84hGdJCI59ynr6bSKK5Pv',
-                'Authorization': 'Bearer 40|QA05eLPRaaKfbRF1KaJs93pdrWpOwZQwcBFzaMEwc6e59ff2'
+                'Authorization': 'Bearer 48|HMW242Uou0VfOgtHUfQotj3Bv0I5tV2xuRWNkwQZ6041ab8e'
             }
         }).then((res) => {
             setMatchedGuides(res.data)
